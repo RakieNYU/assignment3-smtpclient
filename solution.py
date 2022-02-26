@@ -1,8 +1,8 @@
-#RakieNYU
+# RakieNYU
 from socket import *
 
+def smtp_client(port=1025, mailserver='127.0.0.1'):
 
-def smtp_client(port=1025, mailserver="127.0.0.1"):
     msg = "\r\n SMTP LAB"
     endmsg = "\r\n.\r\n"
 
@@ -12,7 +12,7 @@ def smtp_client(port=1025, mailserver="127.0.0.1"):
 
     # Fill in start
     clientSocket = socket(AF_INET, SOCK_STREAM)
-    clientSocket.connect(mailserver)
+    clientSocket.connect(mailserver, port)
     # Fill in end
 
     recv = clientSocket.recv(1024).decode()
@@ -24,7 +24,7 @@ def smtp_client(port=1025, mailserver="127.0.0.1"):
     heloCommand = 'HELO Alice\r\n'
     clientSocket.send(heloCommand.encode())
     recv1 = clientSocket.recv(1024).decode()
-    #print(recv1) 
+    #print(recv1)
     #if recv1[:3] != '250':
     #    print('250 reply not received from server.')
 
@@ -54,7 +54,7 @@ def smtp_client(port=1025, mailserver="127.0.0.1"):
 
     # Send message data.
     # Fill in start
-    subject = "Subject: SMTP Client Python Script \r\n\r\n" 
+    subject = "Subject: SMTP Client Python Script \r\n\r\n"
     clientSocket.send(subject.encode())
     date = time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
     date = date + "\r\n\r\n"
