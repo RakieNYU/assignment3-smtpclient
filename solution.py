@@ -1,83 +1,82 @@
-# RakieNYU
 from socket import *
+import base64
+import time
 
-def smtp_client(port=1025, mailserver='127.0.0.1'):
+msg = "\r\n I love Computer Networks"
+endmsg = "\r\n.\r\n"
 
-    msg = "\r\n SMTP LAB"
-    endmsg = "\r\n.\r\n"
+mailserver = ("mail.smtp2go.com", 2525) #Fill in start #Fill in end
 
-    # Choose a mail server (e.g. Google mail server) if you want to verify the script beyond GradeScope
+clientSocket = socket(AF_INET, SOCK_STREAM)
+#clientSocket = ssl.wrap_socket(clientSocket)
+clientSocket.connect(mailserver)
 
-    # Create socket called clientSocket and establish a TCP connection with mailserver and port
+recv = clientSocket.recv(1024)
+recv = recv.decode()
+print("Message after connection request:" + recv)
+if recv[:3] != '220':
+    print('220 reply not received from server.')
 
-    # Fill in start
-    clientSocket = socket(AF_INET, SOCK_STREAM)
-    clientSocket.connect(mailserver, port)
+heloCommand = 'HELO Alice\r\n'
+clientSocket.send(heloCommand.encode())
+recv1 = clientSocket.recv(1024)
+recv1 = recv1.decode()
+print("Message after EHLO command:" + recv1)
+if recv1[:3] != '250':
+    print('250 reply not received from server.')
 
-    # Fill in end
-
-    recv = clientSocket.recv(1024).decode()
-    #print(recv) #You can use these print statement to validate return codes from the server.
-    #if recv[:3] != '220':
-    #    print('220 reply not received from server.')
-
-    # Send HELO command and print server response.
-    heloCommand = 'HELO Alice\r\n'
-    clientSocket.send(heloCommand.encode())
-    recv1 = clientSocket.recv(1024).decode()
-    #print(recv1)
-    #if recv1[:3] != '250':
-    #    print('250 reply not received from server.')
-
-    # Send MAIL FROM command and handle server response.
-    # Fill in start
-    mailFrom = "MAIL FROM: <vanam.rakesh@gmail.com> \r\n"
-    clientSocket.send(mailFrom.encode())
-    recv2 = clientSocket.recv(1024)
-    recv2 = recv2.decode()
-    # Fill in end
-
-    # Send RCPT TO command and handle server response.
-    # Fill in start
-    rcptTo = "RCPT TO: <rakesh.vanam99@gmail.com> \r\n"
-    clientSocket.send(rcptTo.encode())
-    recv3 = clientSocket.recv(1024)
-    recv3 = recv3.decode()
-    # Fill in end
-
-    # Send DATA command and handle server response.
-    # Fill in start
-    data = "DATA\r\n"
-    clientSocket.send(data.encode())
-    recv4 = clientSocket.recv(1024)
-    recv4 = recv4.decode()
-    # Fill in end
-
-    # Send message data.
-    # Fill in start
-    subject = "Subject: SMTP Client Python Script \r\n\r\n"
-    clientSocket.send(subject.encode())
-    date = time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
-    date = date + "\r\n\r\n"
-    clientSocket.send(date.encode())
-    clientSocket.send(msg.encode())
-    clientSocket.send(endmsg.encode())
-    recv_msg = clientSocket.recv(1024)
-    # Fill in end
-
-    # Message ends with a single period, send message end and handle server response.
-    # Fill in start
-    # Fill in end
-
-    # Send QUIT command and handle server response.
-    # Fill in start
-    quit = "QUIT\r\n"
-    clientSocket.send(quit.encode())
-    recv5 = clientSocket.recv(1024)
-    print(recv5.decode())
-    clientSocket.close()
-    # Fill in end
+#command = 'STARTTLS \r\n'
+#command = command.encode()
+#clientSocket.send(command)
+#recv2 = clientSocket.recv(1024)
+#recv2 = recv2.decode()
+#print("Message after STARTTLS command:" + recv2)
+#if recv2[:3] != '250':
+#    print('250 reply not received from server.')
 
 
-if __name__ == '__main__':
-    smtp_client(1025, '127.0.0.1')
+#Info for username and password
+#username =  "rjcool.joshi2@gmail.com" 	#input("Enter the username : ") 
+#password =  "uk0GEj4BWSh2" 				#input("Enter the password : ") 
+#base64_str = ("\x00"+username+"\x00"+password).encode()
+#base64_str = base64.b64encode(base64_str)
+#authMsg = "AUTH PLAIN ".encode()+base64_str+"\r\n".encode()
+#clientSocket.send(authMsg)
+#recv_auth = clientSocket.recv(1024)
+#print(recv_auth.decode())
+
+mailFrom = "MAIL FROM: <rjcool.joshi2@gmail.com> \r\n"
+clientSocket.send(mailFrom.encode())
+recv2 = clientSocket.recv(1024)
+recv2 = recv2.decode()
+print("After MAIL FROM command: "+recv2)
+
+rcptTo = "RCPT TO: <rj1234@nyu.edu> \r\n"
+clientSocket.send(rcptTo.encode())
+recv3 = clientSocket.recv(1024)
+recv3 = recv3.decode()
+print("After RCPT TO command: "+recv3)
+
+data = "DATA\r\n"
+clientSocket.send(data.encode())
+recv4 = clientSocket.recv(1024)
+recv4 = recv4.decode()
+print("After DATA command: "+recv4)
+
+
+#sub = input("Enter the subject : ")
+subject = "Subject: SMTP Client Python Script \r\n\r\n" 
+clientSocket.send(subject.encode())
+date = time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+date = date + "\r\n\r\n"
+clientSocket.send(date.encode())
+clientSocket.send(msg.encode())
+clientSocket.send(endmsg.encode())
+recv_msg = clientSocket.recv(1024)
+print("Response after sending message body:"+recv_msg.decode())
+
+quit = "QUIT\r\n"
+clientSocket.send(quit.encode())
+recv5 = clientSocket.recv(1024)
+print(recv5.decode())
+clientSocket.close()
