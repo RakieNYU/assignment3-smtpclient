@@ -49,23 +49,18 @@ def smtp_client(port=1025, mailserver='127.0.0.1'):
     data = "DATA\r\n"
     clientSocket.send(data.encode())
     recv4 = clientSocket.recv(1024)
-    recv4 = recv4.decode()
     # Fill in end
 
     # Send message data.
     # Fill in start
     subject = "Subject: SMTP Client Python Script \r\n\r\n"
-    clientSocket.send(subject.encode())
-    date = time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
-    date = date + "\r\n\r\n"
-    clientSocket.send(date.encode())
     clientSocket.send(msg.encode())
-    clientSocket.send(endmsg.encode())
-    recv_msg = clientSocket.recv(1024)
     # Fill in end
 
     # Message ends with a single period, send message end and handle server response.
     # Fill in start
+    clientSocket.send(endmsg.encode())
+    recv_msg = clientSocket.recv(1024)
     # Fill in end
 
     # Send QUIT command and handle server response.
@@ -73,7 +68,7 @@ def smtp_client(port=1025, mailserver='127.0.0.1'):
     quit = "QUIT\r\n"
     clientSocket.send(quit.encode())
     recv5 = clientSocket.recv(1024)
-    print(recv5.decode())
+    # print(recv5.decode())
     clientSocket.close()
     # Fill in end
 
